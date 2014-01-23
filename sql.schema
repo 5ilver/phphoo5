@@ -1,0 +1,34 @@
+
+create database phpHoo\p\g
+
+use phpHoo\p\g
+
+create table MyCategories (
+	CatID bigint(21) NOT NULL auto_increment,
+	CatName varchar(32) NOT NULL,
+	CatParent bigint(21),
+	PRIMARY KEY (CatID),
+	UNIQUE (CatName)
+)\p\g
+
+
+
+
+create table MyLinks (
+	LinkID bigint(21) NOT NULL auto_increment,
+	CatID bigint(21) NOT NULL,
+	Url varchar(255) NOT NULL,
+	LinkName varchar(64) NOT NULL,
+	Description varchar(255) NOT NULL,
+	Approved tinyint(8) DEFAULT '0',
+	SubmitName varchar(64) NOT NULL,
+	SubmitEmail varchar(64) NOT NULL,
+	SubmitDate bigint(21) NOT NULL,
+	PRIMARY KEY (LinkID),
+	UNIQUE (Url)
+)\p\g
+
+show columns from MyCategories\p\g
+
+show columns from MyLinks\p\g
+
