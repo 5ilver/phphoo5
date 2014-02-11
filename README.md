@@ -1,4 +1,4 @@
-// phphoo5 - a yahoo-like link directory written for PHP5
+// phphoo5 - a yahoo-like link directory for PHP5
 // 2014 AGM
 //
 // This program is free software; you can redistribute it and/or
@@ -21,4 +21,4 @@
 // Refer to http://www.webreference.com/perl/xhoo/php1/ for phphoo, the
 // first cut done by CDI.
 
-To install, create your database with the schema file, grant access to a mysql user for phphoo,  then configure by editing config.php
+To install, create your database with the schema file, grant access to a mysql user for phphoo ( GRANT ALL PRIVILEGES ON phpHoo.* TO 'phphoouser'@'localhost'  identified by "phphoopass";),  then configure by renaming config.php.dist to config.php and filling in your settings. 

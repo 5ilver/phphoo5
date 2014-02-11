@@ -145,9 +145,9 @@ function show_submissions_list($CatID)
 		$sub = $db->get_Submissions();
 	};
 
-	print "<UL>\n";
 	if(!empty($sub))
 	{
+	print "<UL>\n";
 		while ( list ( $key,$val ) = each ($sub))
 		{
 			$Url		= stripslashes($val["Url"]);
@@ -188,10 +188,10 @@ function show_submissions_list($CatID)
 			print "]</SMALL>";
 			print "</LI>";
 		}
-	}else{
-		print "<br><center><i>No new submissions</i></center><br>";
-	}
 	print "</UL>\n";
+	}else{
+		print "<center><i>No new submissions</i></center>";
+	}
 	return;
 }
 
@@ -266,12 +266,12 @@ function start_browse($CatID="")
 	}
 	$CatID = $OurCatID;	// restore CatID
 
-	print "<b>$currentName:</b>\n";
 
 	// Print list of links
-	print "<UL>\n";
 	if(!empty($links))
 	{
+		print "<UL>\n";
+		print "<b>$currentName:</b>\n";
 		while ( list ( $key,$val ) = each ($links))
 		{
 			$Url		= stripslashes($val["Url"]);
@@ -297,8 +297,8 @@ function start_browse($CatID="")
 			}
 			print "</LI>\n";
 		}
+		print "</UL>\n";
 	}
-	print "</UL>\n";
 
 	if ("$ANYONE_SUGGEST" == "true" || "$ADMIN_MODE" == "true"){
 		print "<P><CENTER>";
@@ -307,17 +307,18 @@ function start_browse($CatID="")
 	}
 	if ("$ADMIN_MODE"=="true"){
 		print "\n<HR>\n";
-		print "<CENTER><H1>Submissions</H1></CENTER>\n";
+		print "<CENTER><H2>Submissions</H2></CENTER>\n";
 		show_submissions_list($CatID);
 		$CatID = $OurCatID;	// restore CatID
 
 		// Show form to add a subcategory
 		print "\n<HR>\n";
+		print "<CENTER><H2>New Catergory</H2></CENTER>\n";
 		print "<p><center>
 		<form action=\"".$_SERVER['PHP_SELF']."\" method=\"POST\">
 		<input type=\"hidden\" name=\"CatID\" value=\"$CatID\">
 		<input type=\"hidden\" name=\"add_cat\" value=\"1\">
-		<B>New Category:</B> <input name=\"NewCatName\" size=\"40\">
+		<input name=\"NewCatName\" size=\"40\">
 		<input type=\"submit\" name=\"submit\" value=\" Create \">
 		</form>
 		</center></p>\n";
@@ -746,7 +747,8 @@ if( ($viewCat) or ( (!$HTTP_POST_VARS) and (!$query) ) )
 {
 	if("$ADMIN_MODE" == "true") {
 		print "<p>You are ADMIN<UL>";
-		print "<LI>Would you like to <a href=\"?exit_admin=1\">Exit ADMIN mode?</a></LI>";
+		print "<LI>You could <a href=\"?exit_admin=1\">Exit ADMIN mode</a></LI>";
+		print "<LI>Or just <a href=\"?\">Go back</a></LI>";
 		print "</UL></P>\n";
 		exit;
 	}else{
