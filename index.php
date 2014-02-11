@@ -188,6 +188,8 @@ function show_submissions_list($CatID)
 			print "]</SMALL>";
 			print "</LI>";
 		}
+	}else{
+		print "<br><center><i>No new submissions</i></center><br>";
 	}
 	print "</UL>\n";
 	return;
@@ -196,12 +198,15 @@ function show_submissions_list($CatID)
 function start_page($CatID="",$title="",$msg="")
 {
 	global $SITE_URL;
+	global $ADMIN_MODE;
 
 	print_header($CatID,$title);
 
 	if(!empty($msg))
 	{
 		print "\n<CENTER><B>$msg</B></CENTER>\n";
+	}else{
+		print "\n<CENTER><i>ADMIN mode active</i></CENTER>\n";
 	}
 
 	print "<P><CENTER><FORM ACTION=\"".$_SERVER['PHP_SELF']."\" METHOD=\"POST\">\n";
