@@ -24,4 +24,5 @@ $SQL_DBASE = "phpHoo";               // Set name of database to use
 $SQL_USER = "phphoo";                  // Set database username
 $SQL_PASS = "balls";                  // Set database R/W password
 $SQL_SERVER = "localhost";            // Set server name
+$ANYONE_SUGGEST = "false";                  // Allow anyone to suggest links
 ?>

@@ -22,26 +22,25 @@ if (isset($_POST['PASS'])){
 }
 
 
-// Check cookie to see if we are in admin modeT
+// Check cookie to see if we are in admin mode
 if($HooPass == $ADMIN_COOKIE) {
 	// should we delete the cookie and start?
 	if ("$exit_admin"=="true") {
-		setcookie("HooPass", "");
-		header ("Location: $SITE_URL$SITE_DIR");
+		print "You have been logged out";
+	}else{
+
+		// Or offer entry as USER or ADMIN?
+		print "<HTML><BODY>\n";
+	
+		print "<p>You are already ADMIN - Your options are:<UL>";
+		print "<LI><a href=\"$SITE_URL$SITE_DIR\">Back to directory</a></LI>";
+		print "<LI><a href=\"?exit_admin=1\">Exit ADMIN</a></LI>";
+		print "</UL></P>\n";
+	
+		print "<p>PHP ver $ver</p>";
+		print "</BODY></HTML>\n";
 		exit;
 	}
-
-	// Or offer entry as USER or ADMIN?
-	print "<HTML><BODY>\n";
-
-	print "<p>You are already ADMIN - Your options are:<UL>";
-	print "<LI><a href=\"$SITE_URL$SITE_DIR\">Enter as ADMIN</a></LI>";
-	print "<LI><a href=\"?exit_admin=1\">Enter as USER</a></LI>";
-	print "</UL></P>\n";
-
-	print "<p>PHP ver $ver</p>";
-	print "</BODY></HTML>\n";
-	exit;
 }
 
 // Check to see if we are being posted a set of USER/PASS
@@ -49,6 +48,11 @@ if (($USER == $ADMIN_USER) && ($PASS == $ADMIN_PASS)) {
 	setcookie("HooPass", $ADMIN_COOKIE);
 	header ("Location: $SITE_URL$SITE_DIR");
 	exit;
+}
+
+// Bad login attempt? 
+if (($USER != "") || ($PASS != "")) {
+	print "Invalid login";
 }
 
 print "<HTML><BODY>\n";

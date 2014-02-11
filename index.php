@@ -218,6 +218,7 @@ function start_browse($CatID="")
 	global $db;
 	global $ADMIN_MODE;
 	global $TOP_CAT_NAME;
+	global $ANYONE_SUGGEST;
 
 	$data	= $db->get_Cats($CatID);
 	$links	= $db->get_Links($CatID);
@@ -294,10 +295,11 @@ function start_browse($CatID="")
 	}
 	print "</UL>\n";
 
-	print "<P><CENTER>";
-	print " <A HREF=\"".$_SERVER['PHP_SELF']."?add=$currentID\">Suggest new link</A> ";
-	print "</CENTER></P>\n";
-
+	if ("$ANYONE_SUGGEST" == "true" || "$ADMIN_MODE" == "true"){
+		print "<P><CENTER>";
+		print " <A HREF=\"".$_SERVER['PHP_SELF']."?add=$currentID\">Suggest new link</A> ";
+		print "</CENTER></P>\n";
+	}
 	if ("$ADMIN_MODE"=="true"){
 		print "\n<HR>\n";
 		print "<CENTER><H1>Submissions</H1></CENTER>\n";
@@ -569,6 +571,26 @@ if (isset($_GET['CatID'])){
 	$CatID=$_GET['CatID'];
 }
 
+$enter_admin="";
+if (isset($_GET['enter_admin'])){
+	$enter_admin = "true";
+}
+$exit_admin="";
+if (isset($_GET['exit_admin'])){
+	$exit_admin = "true";
+}
+$USER="";
+if (isset($_POST['USER'])){
+	$USER = $_POST['USER'];
+}
+$PASS="";
+if (isset($_POST['PASS'])){
+	$PASS = $_POST['PASS'];
+}
+
+
+
+
 $HTTP_POST_VARS=$_POST;
 
 
@@ -614,15 +636,20 @@ if( ($viewCat) or ( (!$HTTP_POST_VARS) and (!$query) ) )
 } elseif ($suggest)
 {
 	$err_msg = "";
-	if(!$db->suggest($HTTP_POST_VARS,$err_msg))
-	{
+	if ("$ANYONE_SUGGEST" == "true" || "$ADMIN_MODE" == "true"){
+		if(!$db->suggest($HTTP_POST_VARS,$err_msg))
+		{
+			$title = "Suggestion Error";
+			$msg = "Sugestion not accepted: ".$err_msg;
+		} else {
+			$title = "Suggestion Submitted";
+			$msg = "Suggestion submitted for approval";
+			// Also tell the admin about it
+			mail_new_link($HTTP_POST_VARS);
+		}
+	}else{
 		$title = "Suggestion Error";
-		$msg = "Sugestion not accepted: ".$err_msg;
-	} else {
-		$title = "Suggestion Submitted";
-		$msg = "Suggestion submitted for approval";
-		// Also tell the admin about it
-		mail_new_link($HTTP_POST_VARS);
+		$msg = "Sugestion not allowed";
 	}
 	start_page($CatID,$title,$msg);
 	start_browse($CatID);
@@ -631,7 +658,7 @@ if( ($viewCat) or ( (!$HTTP_POST_VARS) and (!$query) ) )
 } elseif ($update)
 {
 	$err_msg = "";
-	if ($ADMIN_MODE == "true") {
+	if ( "$ADMIN_MODE" == "true") {
 		if(!$db->update($HTTP_POST_VARS,$err_msg))
 		{
 			$title = "Update Error";
@@ -650,7 +677,7 @@ if( ($viewCat) or ( (!$HTTP_POST_VARS) and (!$query) ) )
 
 } elseif ($approve)
 {
-	if ($ADMIN_MODE) {
+	if ( "$ADMIN_MODE" == "true" ) {
 		if(!$db->approve($approve,$err_msg))
 		{
 			$title = "Approval Error";
@@ -669,7 +696,7 @@ if( ($viewCat) or ( (!$HTTP_POST_VARS) and (!$query) ) )
 
 } elseif ($disapprove)
 {
-	if ($ADMIN_MODE == "true") {
+	if ( "$ADMIN_MODE" == "true") {
 		if(!$db->disapprove($disapprove,$err_msg))
 		{
 			$title = "Disapproval Error";
@@ -688,7 +715,7 @@ if( ($viewCat) or ( (!$HTTP_POST_VARS) and (!$query) ) )
 
 } elseif ($delete_link)
 {
-	if ($ADMIN_MODE) {
+	if ( "$ADMIN_MODE" == "true") {
 		if(!$db->delete_link($delete_link,$err_msg))
 		{
 			$title = "Error deleting submission";
@@ -709,6 +736,42 @@ if( ($viewCat) or ( (!$HTTP_POST_VARS) and (!$query) ) )
 {
 	show_edit_link($edit_link,$title,$msg);
 	exit;
+
+} elseif ($enter_admin)
+{
+	if("$ADMIN_MODE" == "true") {
+		print "<p>You are ADMIN<UL>";
+		print "<LI>Would you like to <a href=\"?exit_admin=1\">Exit ADMIN mode?</a></LI>";
+		print "</UL></P>\n";
+		exit;
+	}else{
+	
+		// Check to see if we are being posted a set of USER/PASS
+		if (($USER == $ADMIN_USER) && ($PASS == $ADMIN_PASS)) {
+			setcookie("HooPass", $ADMIN_COOKIE);
+			header ("Location: ".$_SERVER['PHP_SELF']);
+		exit;
+		}
+	
+		// Bad login attempt? 
+		if (($USER != "") || ($PASS != "")) {
+			print "Invalid login";
+		}
+	
+	
+		print "<form action=\"".$_SERVER['PHP_SELF']."?enter_admin=1\" method=\"POST\">";
+		print "<table bgcolor=\"#CCCCCC\">";
+		print "<tr><td>Login Name:</td><td><input type=\"text\" size=\"10\" name=\"USER\"></td></tr>";
+		print "<tr><td>Password:</td><td><input type=\"password\" size=\"10\" name=\"PASS\"></td></tr>";
+		print "<tr><td></td><td align=\"right\"><input type=\"submit\" name=\"LOGIN\" value=\"LOGIN\"></td></tr>";
+		print "</table></form>\n";
+	}
+	exit;
+
+} elseif ($exit_admin)
+{
+	setcookie("HooPass", "");
+	header ("Location: ".$_SERVER['PHP_SELF']);
 
 } elseif ($KeyWords)
 {
@@ -755,6 +818,9 @@ if( ($viewCat) or ( (!$HTTP_POST_VARS) and (!$query) ) )
 	exit;
 }
 ?>
+
+
+
 
 
 
