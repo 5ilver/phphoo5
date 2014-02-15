@@ -206,7 +206,9 @@ function start_page($CatID="",$title="",$msg="")
 	{
 		print "\n<CENTER><B>$msg</B></CENTER>\n";
 	}else{
-		print "\n<CENTER><i>ADMIN mode active</i></CENTER>\n";
+		if ( "$ADMIN_MODE" == "true" ){
+			print "\n<CENTER><i>ADMIN mode active</i></CENTER>\n";
+		}
 	}
 
 	print "<P><CENTER><FORM ACTION=\"".$_SERVER['PHP_SELF']."\" METHOD=\"POST\">\n";
