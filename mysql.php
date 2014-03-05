@@ -306,15 +306,8 @@ Class MySQL
 		$DEBUG = ""; // set DEBUG == "\n" to see this query
 
 		$keywords = trim(urldecode($keywords));
-		$keywords = ereg_replace("([    ]+)"," ",$keywords);
 
-		if(!ereg(" ",$keywords))
-		{
-			// Only 1 keyword
-			$KeyWords[0] = "$keywords";
-		} else {
-			$KeyWords = explode(" ",$keywords);
-		}
+		$KeyWords = explode(" ",$keywords);
 
 		$sql = "SELECT DISTINCT LinkID,CatID,Url,LinkName,Description FROM $this->LNK_TBL WHERE (Approved != 0) AND ( $DEBUG ";
 		$count = count($KeyWords);

@@ -522,8 +522,6 @@ if($HooPass == $ADMIN_COOKIE) {
 	$ADMIN_MODE = "true";
 }
 
-$query = getenv("QUERY_STRING");
-
 $viewCat="";
 if (isset($_GET['viewCat'])){
 	$viewCat=$_GET['viewCat'];
@@ -602,7 +600,7 @@ if (isset($_POST['PASS'])){
 $HTTP_POST_VARS=$_POST;
 
 
-if( ($viewCat) or ( (!$HTTP_POST_VARS) and (!$query) ) )
+if( ($viewCat) or ( (!$HTTP_POST_VARS) and (!$KeyWords) ) )
 {
 	start_page($viewCat);
 	start_browse($viewCat);
