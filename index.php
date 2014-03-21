@@ -600,13 +600,7 @@ if (isset($_POST['PASS'])){
 $HTTP_POST_VARS=$_POST;
 
 
-if( ($viewCat) or ( (!$HTTP_POST_VARS) and (!$KeyWords) ) )
-{
-	start_page($viewCat);
-	start_browse($viewCat);
-	exit;
-
-} elseif($add)
+if($add)
 {
 	if (("$add" == "top") || empty($add)) {
 		$add = 0;
@@ -819,9 +813,8 @@ if( ($viewCat) or ( (!$HTTP_POST_VARS) and (!$KeyWords) ) )
 	exit;
 
 } else {
-	// Something terribly bad happened - start fresh
-	start_page("","Error","Unknown error");
-	start_browse("");
+	start_page($viewCat);
+	start_browse($viewCat);
 	exit;
 }
 ?>
