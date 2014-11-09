@@ -510,22 +510,15 @@ Class MySQL
 		return $results;
 	}
 
-	function add_cat ($postData="",&$err_msg)
+	function add_cat ($CatParent,$NewCatName,&$err_msg)
 	{
 		$err_msg="";
 
-		if( (empty($postData)) or (!is_array($postData)) ) {
-			$err_msg = "No data submitted or not an array of data";
-			return false;
-		}
-
-		$CatParent = $_POST["CatID"];
 		if (empty($CatParent) || ($CatParent == "0") || ($CatParent == "top")) {
 			$CatParent = "NULL";
 		}
-		$CatName = addslashes($_POST["NewCatName"]);
 
-		if(empty($CatName)) {
+		if(empty($NewCatName)) {
 			$err_msg = "No new category name given.";
 			return false;
 		}
@@ -533,7 +526,7 @@ Class MySQL
 		$sql = "INSERT INTO $this->CAT_TBL ";
 		$sql .= "(CatName,CatParent) ";
 		$sql .= "values ";
-		$sql .= "('$CatName',$CatParent) ";
+		$sql .= "('$NewCatName',$CatParent) ";
 		$results = $this->insert($sql);
 		return $results;
 	}

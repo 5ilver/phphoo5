@@ -317,9 +317,7 @@ function start_browse($CatID="")
 		print "\n<HR>\n";
 		print "<CENTER><H2>New Catergory</H2></CENTER>\n";
 		print "<p><center>
-		<form action=\"".$_SERVER['PHP_SELF']."\" method=\"POST\">
-		<input type=\"hidden\" name=\"CatID\" value=\"$CatID\">
-		<input type=\"hidden\" name=\"add_cat\" value=\"1\">
+		<form action=\"".$_SERVER['PHP_SELF']."?add_cat=1&CatID=$CatID\" method=\"POST\">
 		<input name=\"NewCatName\" size=\"40\">
 		<input type=\"submit\" name=\"submit\" value=\" Create \">
 		</form>
@@ -373,7 +371,6 @@ function show_edit_link($LinkID="",$title="",$msg="")
 {
 	global $db;
 	global $TOP_CAT_NAME;
-	global $FULL_ADMIN_ACCESS;
 
 	print_header($CatID,$title,$msg);
 
@@ -432,7 +429,6 @@ function show_add_link($add = "NULL", $CatName = "Unknown")
 {
 	global $db;
 	global $TOP_CAT_NAME;
-	global $FULL_ADMIN_ACCESS;
 	global $UserName;		// Cookie
 	global $UserEmail;		// Cookie
 
@@ -533,8 +529,8 @@ if (isset($_GET['add'])){
 }
 
 $add_cat="";
-if (isset($_POST['add_cat'])){
-	$add_cat=$_POST['add_cat'];
+if (isset($_GET['add_cat'])){
+	$add_cat=$_GET['add_cat'];
 }
 
 $suggest="";
@@ -577,6 +573,11 @@ if (isset($_GET['CatID'])){
 	$CatID=$_GET['CatID'];
 }
 
+$NewCatName="";
+if (isset($_POST['NewCatName'])){
+	$NewCatName=$_POST['NewCatName'];
+}
+
 $enter_admin="";
 if (isset($_GET['enter_admin'])){
 	$enter_admin = "true";
@@ -616,8 +617,8 @@ if($add)
 } elseif($add_cat)
 {
 	$err_msg = "";
-	if ("$ADMIN_MODE" == "true" && $FULL_ADMIN_ACCESS) {
-		if(!$db->add_cat($HTTP_POST_VARS,$err_msg))
+	if ("$ADMIN_MODE" == "true") {
+		if(!$db->add_cat($CatID,$NewCatName,$err_msg))
 		{
 			$title = "Error Creating Category";
 			$msg = "Category not created. ".$err_msg;
@@ -744,28 +745,26 @@ if($add)
 		print "<LI>You could <a href=\"?exit_admin=1\">Exit ADMIN mode</a></LI>";
 		print "<LI>Or just <a href=\"?\">Go back</a></LI>";
 		print "</UL></P>\n";
-		exit;
 	}else{
 	
 		// Check to see if we are being posted a set of USER/PASS
-		if (($USER == $ADMIN_USER) && ($PASS == $ADMIN_PASS)) {
-			setcookie("HooPass", $ADMIN_COOKIE);
-			header ("Location: ".$_SERVER['PHP_SELF']);
-		exit;
-		}
-	
-		// Bad login attempt? 
 		if (($USER != "") || ($PASS != "")) {
-			print "Invalid login";
+			if (($USER == $ADMIN_USER) && ($PASS == $ADMIN_PASS)) {
+				setcookie("HooPass", $ADMIN_COOKIE);
+				header ("Location: ".$_SERVER['PHP_SELF']);
+			exit;
+			}else{
+				// Bad login attempt? 
+				print "Invalid login";
+			}
 		}
-	
-	
 		print "<form action=\"".$_SERVER['PHP_SELF']."?enter_admin=1\" method=\"POST\">";
 		print "<table bgcolor=\"#CCCCCC\">";
 		print "<tr><td>Login Name:</td><td><input type=\"text\" size=\"10\" name=\"USER\"></td></tr>";
 		print "<tr><td>Password:</td><td><input type=\"password\" size=\"10\" name=\"PASS\"></td></tr>";
 		print "<tr><td></td><td align=\"right\"><input type=\"submit\" name=\"LOGIN\" value=\"LOGIN\"></td></tr>";
 		print "</table></form>\n";
+		print "<a href=\"".$_SERVER['PHP_SELF']."?\">Back to home</a>";
 	}
 	exit;
 
