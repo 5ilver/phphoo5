@@ -1,4 +1,5 @@
 <?php
+include ("mysqlshim.php");
 
 Class MySQL
 {
